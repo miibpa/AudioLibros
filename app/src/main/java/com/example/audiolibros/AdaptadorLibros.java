@@ -12,6 +12,8 @@ import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
+import com.example.audiolibros.fragments.ClickAction;
+import com.example.audiolibros.fragments.EmptyClickAction;
 
 import java.util.Vector;
 
@@ -20,14 +22,22 @@ public class AdaptadorLibros extends
     private LayoutInflater inflador;      //Crea Layouts a partir del XML
     protected Vector<Libro> vectorLibros; //Vector con libros a visualizar
     private Context contexto;
-    private View.OnClickListener onClickListener;
-    private View.OnLongClickListener onLongClickListener;
+    private ClickAction clickAction = new EmptyClickAction();
+    private ClickAction longClickAction = new EmptyClickAction();
 
     public AdaptadorLibros(Context contexto, Vector<Libro> vectorLibros) {
         inflador = (LayoutInflater) contexto
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.vectorLibros = vectorLibros;
         this.contexto = contexto;
+    }
+
+    public void setClickAction(ClickAction clickAction) {
+        this.clickAction = clickAction;
+    }
+
+    public void setLongClickAction(ClickAction longClickAction) {
+        this.longClickAction = longClickAction;
     }
 
     //Creamos nuestro ViewHolder, con los tipos de elementos a modificar
@@ -48,19 +58,30 @@ public class AdaptadorLibros extends
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // Inflamos la vista desde el xml
         View v = inflador.inflate(R.layout.elemento_selector, null);
-        v.setOnClickListener(onClickListener);
-        v.setOnLongClickListener(onLongClickListener);
         return new ViewHolder(v);
     }
 
     // Usando como base el ViewHolder y lo personalizamos
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int posicion) {
+    public void onBindViewHolder(final ViewHolder holder, final int posicion) {
         Libro libro = vectorLibros.elementAt(posicion);
         //holder.portada.setImageResource(libro.recursoImagen);
         holder.titulo.setText(libro.titulo);
-        Aplicacion aplicacion = (Aplicacion) contexto.getApplicationContext();
-        aplicacion.getLectorImagenes().get(libro.urlImagen,
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                clickAction.execute(posicion);
+            }
+        });
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                longClickAction.execute(posicion);
+                return true;
+            }
+        });
+        VolleySingleton volleySingleton = VolleySingleton.getInstance(contexto);
+        volleySingleton.getLectorImagenes().get(libro.urlImagen,
                 new ImageLoader.ImageListener() {
                     @Override public void onResponse(ImageLoader.ImageContainer
                                                              response, boolean isImmediate) {
@@ -90,12 +111,5 @@ public class AdaptadorLibros extends
         return vectorLibros.size();
     }
 
-    public void setOnItemClickListener(View.OnClickListener onClickListener) {
-        this.onClickListener = onClickListener;
-    }
-    public void setOnItemLongClickListener(View.OnLongClickListener
-                                               onLongClickListener) {
-        this.onLongClickListener = onLongClickListener;
-    }
 
 }

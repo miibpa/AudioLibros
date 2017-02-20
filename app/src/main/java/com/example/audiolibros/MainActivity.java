@@ -2,12 +2,10 @@ package com.example.audiolibros;
 
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -24,8 +22,7 @@ import android.widget.Toast;
 import com.example.audiolibros.fragments.DetalleFragment;
 import com.example.audiolibros.fragments.SelectorFragment;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener{
+public class MainActivity extends AppCompatActivity implements MainPresenter.View,NavigationView.OnNavigationItemSelectedListener{
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private AdaptadorLibrosFiltro adaptador;
@@ -33,12 +30,15 @@ public class MainActivity extends AppCompatActivity
     private TabLayout tabs;
     private DrawerLayout drawer;
     private ActionBarDrawerToggle toggle;
+    private MainPresenter mainPresenter;
+    //private LibroStorage libroStorage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        adaptador = ((Aplicacion) getApplicationContext()).getAdaptador();
+        adaptador = LibrosSingleton.getInstance(getApplicationContext()).getAdaptador();
+
         //Fragments
         if ((findViewById(R.id.contenedor_pequeno) != null) &&
                 (getFragmentManager().findFragmentById(
@@ -55,6 +55,13 @@ public class MainActivity extends AppCompatActivity
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+        BooksRepository booksRepository =  new BooksRepository(LibroSharedPreferencesStorage.getInstance(getApplicationContext()));
+
+        mainPresenter = new MainPresenter(new SaveLastBook(booksRepository),
+                new GetLastBook(booksRepository),
+                new HasLastBook(booksRepository),
+                this);
 
         //Pestañas
         tabs = (TabLayout) findViewById(R.id.tabs);
@@ -88,7 +95,7 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                irUltimoVisitado();
+                mainPresenter.clickFavouriteButton();
             }
         });
         // Navigation Drawer
@@ -130,7 +137,21 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
     public void mostrarDetalle(int id) {
+        mostrarFragmentdetalle(id);
+    }
+
+    @Override
+    public void mostrarNoUltimaVisita() {
+        Toast.makeText(this,"Sin última vista",Toast.LENGTH_LONG).show();
+    }
+
+    public MainPresenter getMainPresenter(){
+        return this.mainPresenter;
+    }
+
+    private void mostrarFragmentdetalle(int id){
         DetalleFragment detalleFragment = (DetalleFragment)
                 getFragmentManager().findFragmentById(R.id.detalle_fragment);
         if (detalleFragment != null) {
@@ -145,22 +166,6 @@ public class MainActivity extends AppCompatActivity
             transaccion.replace(R.id.contenedor_pequeno, nuevoFragment);
             transaccion.addToBackStack(null);
             transaccion.commit();
-        }
-        SharedPreferences pref = getSharedPreferences(
-                "com.example.audiolibros_internal", MODE_PRIVATE);
-        SharedPreferences.Editor editor = pref.edit();
-        editor.putInt("ultimo", id);
-        editor.commit();
-    }
-
-    public void irUltimoVisitado() {
-        SharedPreferences pref = getSharedPreferences(
-                "com.example.audiolibros_internal", MODE_PRIVATE);
-        int id = pref.getInt("ultimo", -1);
-        if (id >= 0) {
-            mostrarDetalle(id);
-        } else {
-            Toast.makeText(this,"Sin última vista",Toast.LENGTH_LONG).show();
         }
     }
 

@@ -16,8 +16,10 @@ import android.widget.TextView;
 import com.android.volley.toolbox.NetworkImageView;
 import com.example.audiolibros.Aplicacion;
 import com.example.audiolibros.Libro;
+import com.example.audiolibros.LibrosSingleton;
 import com.example.audiolibros.MainActivity;
 import com.example.audiolibros.R;
+import com.example.audiolibros.VolleySingleton;
 
 import java.io.IOException;
 
@@ -52,14 +54,13 @@ public class DetalleFragment extends Fragment implements
     }
 
     private void ponInfoLibro(int id, View vista) {
-        Libro libro = ((Aplicacion) getActivity().getApplication())
-                .getVectorLibros().elementAt(id);
+        Libro libro = LibrosSingleton.getInstance(getActivity().getApplicationContext()).getLibros().elementAt(id);
         ((TextView) vista.findViewById(R.id.titulo)).setText(libro.titulo);
         ((TextView) vista.findViewById(R.id.autor)).setText(libro.autor);
         //((ImageView) vista.findViewById(R.id.portada)).setImageResource(libro.recursoImagen);
         Aplicacion aplicacion = (Aplicacion) getActivity().getApplication();
         ((NetworkImageView) vista.findViewById(R.id.portada)).setImageUrl(
-                libro.urlImagen,aplicacion.getLectorImagenes());
+                libro.urlImagen, VolleySingleton.getInstance(getActivity().getApplicationContext()).getLectorImagenes());
 
         vista.setOnTouchListener(this);
         if (mediaPlayer != null){
