@@ -3,4 +3,19 @@
     <string name="action_settings">Settings</string>
     <string name="drawer_open">navigation drawer abierto</string>
     <string name="drawer_close">navigation drawer cerrado</string>
+    <string name="welcome_message">Bienvenido, %s</string>
+    <string name="sign_out">Cerrar sesión</string>
+    <string name="facebook_application_id" translatable="false">401037913590440</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fb401037913590440</string>
+    <string name="twitter_consumer_key" translatable="false">G7A9S2kAAxu9sroppUwHRDh57</string>
+    <string name="twitter_consumer_secret" translatable="false">V7vkRm0tOCwgrQsQgtFys72q30Rm1UBKWsWufFliG1OFcA1VHv</string>
+
+    <string name="login_msg_email">Correo electrónico</string>
+    <string name="login_msg_password">Contraseña</string>
+    <string name="login_msg_signin">Iniciar sesión</string>
+    <string name="login_msg_signup">Registrarse</string>
+    <string name="error_connection_failed">Error, fallo en la conexión </string>
+    <string name="error_google">Error al iniciar sesión con Google</string>
+    <string name="error_empty">Por favor ingrese todos los campos</string>
+    <string name="error_cancelled">Error, inicio de sesión cancelado</string>
 </resources>
