@@ -5,26 +5,27 @@ import android.content.SharedPreferences;
 
 /**
  * Created by miguel on 22/1/17.
+ * Implements internal Storage in SharedPrefs
  */
 
-public class LibroSharedPreferencesStorage implements LibroStorage {
+public class BookSharedPreferencesStorage implements BookStorage {
 
     public static final String PREF_AUDIOLIBROS =
             "com.example.audiolibros_internal";
     public static final String KEY_ULTIMO_LIBRO = "ultimo";
     private final Context context;
 
-    private static LibroSharedPreferencesStorage instance;
+    private static BookSharedPreferencesStorage instance;
 
-    public static LibroStorage getInstance(Context context) {
+    public static BookStorage getInstance(Context context) {
         if(instance == null) {
 
-            instance = new LibroSharedPreferencesStorage(context);
+            instance = new BookSharedPreferencesStorage(context);
         }
         return instance;
     }
 
-    private LibroSharedPreferencesStorage(Context context) {
+    private BookSharedPreferencesStorage(Context context) {
         this.context = context;
     }
 

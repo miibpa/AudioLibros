@@ -25,7 +25,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.toolbox.NetworkImageView;
-import com.android.volley.toolbox.Volley;
 import com.example.audiolibros.fragments.DetalleFragment;
 import com.example.audiolibros.fragments.SelectorFragment;
 import com.firebase.ui.auth.AuthUI;
@@ -49,9 +48,9 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        adaptador = LibrosSingleton.getInstance(getApplicationContext()).getAdaptador();
+        adaptador = BooksSingleton.getInstance(getApplicationContext()).getAdaptador();
 
-        //Fragments
+        //Configure fragments
         if ((findViewById(R.id.contenedor_pequeno) != null) &&
                 (getFragmentManager().findFragmentById(
                         R.id.contenedor_pequeno) == null)){
@@ -59,7 +58,8 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
             getFragmentManager().beginTransaction()
                     .add(R.id.contenedor_pequeno, primerFragment).commit();
         }
-        //Barra de acciones
+
+        //Toolbar initialization
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         appBarLayout = (AppBarLayout) findViewById(R.id.appBarLayout);
@@ -68,14 +68,14 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        BooksRepository booksRepository =  new BooksRepository(LibroSharedPreferencesStorage.getInstance(getApplicationContext()));
+        BooksRepository booksRepository =  new BooksRepository(BookSharedPreferencesStorage.getInstance(getApplicationContext()));
 
         mainPresenter = new MainPresenter(new SaveLastBook(booksRepository),
                 new GetLastBook(booksRepository),
                 new HasLastBook(booksRepository),
                 this);
 
-        //Pestañas
+        //Tabs creation
         tabs = (TabLayout) findViewById(R.id.tabs);
         tabs.addTab(tabs.newTab().setText("Todos"));
         tabs.addTab(tabs.newTab().setText("Nuevos"));
@@ -102,7 +102,8 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
             @Override public void onTabUnselected(TabLayout.Tab tab) {}
             @Override public void onTabReselected(TabLayout.Tab tab) {}
         });
-        //Botón Flotante
+
+        //Floating button
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,6 +111,8 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
                 mainPresenter.clickFavouriteButton();
             }
         });
+
+
         // Navigation Drawer
         drawer = (DrawerLayout) findViewById(
                 R.id.drawer_layout);
@@ -194,21 +197,22 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         }
     }
 
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.nav_todos) {
             adaptador.setGenero("");
             adaptador.notifyDataSetChanged();
         } else if (id == R.id.nav_epico) {
-            adaptador.setGenero(Libro.G_EPICO);
+            adaptador.setGenero(Book.G_EPICO);
             adaptador.notifyDataSetChanged();
         } else if (id == R.id.nav_XIX) {
-            adaptador.setGenero(Libro.G_S_XIX);
+            adaptador.setGenero(Book.G_S_XIX);
             adaptador.notifyDataSetChanged();
         } else if (id == R.id.nav_suspense) {
-            adaptador.setGenero(Libro.G_SUSPENSE);
+            adaptador.setGenero(Book.G_SUSPENSE);
             adaptador.notifyDataSetChanged();
         }else if (id == R.id.nav_signout) {
             AuthUI.getInstance().signOut(this)
@@ -217,9 +221,9 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
                         public void onComplete(@NonNull Task<Void> task) {
                             SharedPreferences pref = getSharedPreferences(
                                     "com.example.audiolibros_internal", MODE_PRIVATE);
-                            pref.edit().remove("provider").commit();
-                            pref.edit().remove("email").commit();
-                            pref.edit().remove("name").commit();
+                            pref.edit().remove("provider").apply();
+                            pref.edit().remove("email").apply();
+                            pref.edit().remove("name").apply();
                             Intent i = new Intent(MainActivity.this,CustomLoginActivity.class); i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
                                     | Intent.FLAG_ACTIVITY_NEW_TASK
                                     | Intent.FLAG_ACTIVITY_CLEAR_TASK);

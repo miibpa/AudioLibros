@@ -1,14 +1,19 @@
 package com.example.audiolibros;
 
 /**
+ *
  * Created by miguel on 5/2/17.
+ *
  */
 
 public class MainPresenter  {
+
     private final View  view;
     private final SaveLastBook saveLastBook;
     private final GetLastBook getLastBook;
     private final HasLastBook hasLastBook;
+
+
     public MainPresenter(SaveLastBook saveLastBook,GetLastBook getLastBook,HasLastBook hasLastBook, View view) {
         this.saveLastBook = saveLastBook;
         this.hasLastBook = hasLastBook;

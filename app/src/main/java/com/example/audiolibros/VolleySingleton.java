@@ -10,6 +10,7 @@ import com.android.volley.toolbox.Volley;
 
 /**
  * Created by miguel on 24/1/17.
+ * Communication with server
  */
 
 public class VolleySingleton {

@@ -7,7 +7,7 @@ import java.util.Observer;
 import java.util.Vector;
 
 public class AdaptadorLibrosFiltro extends AdaptadorLibros implements Observer{
-    private Vector<Libro> vectorSinFiltro;// Vector con todos los libros
+    private Vector<Book> vectorSinFiltro;// Vector con todos los libros
     private Vector<Integer> indiceFiltro; // Índice en vectorSinFiltro de
     // Cada elemento de vectorLibros
     private String busqueda = "";         // Búsqueda sobre autor o título
@@ -16,9 +16,9 @@ public class AdaptadorLibrosFiltro extends AdaptadorLibros implements Observer{
     private boolean leido = false;        // Si queremos ver solo leidos
 
     public AdaptadorLibrosFiltro(Context contexto,
-                                 Vector<Libro> vectorLibros) {
-        super(contexto, vectorLibros);
-        vectorSinFiltro = vectorLibros;
+                                 Vector<Book> vectorBooks) {
+        super(contexto, vectorBooks);
+        vectorSinFiltro = vectorBooks;
         recalculaFiltro();
     }
 
@@ -43,22 +43,22 @@ public class AdaptadorLibrosFiltro extends AdaptadorLibros implements Observer{
     }
 
     public void recalculaFiltro() {
-        vectorLibros = new Vector<Libro>();
+        vectorBooks = new Vector<Book>();
         indiceFiltro = new Vector<Integer>();
         for (int i = 0; i < vectorSinFiltro.size(); i++) {
-            Libro libro = vectorSinFiltro.elementAt(i);
-            if ((libro.titulo.toLowerCase().contains(busqueda) ||
-                    libro.autor.toLowerCase().contains(busqueda))
-                    && (libro.genero.startsWith(genero))
-                    && (!novedad || (novedad && libro.novedad))
-                    && (!leido || (leido && libro.leido))) {
-                vectorLibros.add(libro);
+            Book book = vectorSinFiltro.elementAt(i);
+            if ((book.titulo.toLowerCase().contains(busqueda) ||
+                    book.autor.toLowerCase().contains(busqueda))
+                    && (book.genero.startsWith(genero))
+                    && (!novedad || (novedad && book.novedad))
+                    && (!leido || (leido && book.leido))) {
+                vectorBooks.add(book);
                 indiceFiltro.add(i);
             }
         }
     }
 
-    public Libro getItem(int posicion) {
+    public Book getItem(int posicion) {
         return vectorSinFiltro.elementAt(indiceFiltro.elementAt(posicion));
     }
 
@@ -71,8 +71,8 @@ public class AdaptadorLibrosFiltro extends AdaptadorLibros implements Observer{
         recalculaFiltro();
     }
 
-    public void insertar(Libro libro){
-        vectorSinFiltro.add(libro);
+    public void insertar(Book book){
+        vectorSinFiltro.add(book);
         recalculaFiltro();
     }
 

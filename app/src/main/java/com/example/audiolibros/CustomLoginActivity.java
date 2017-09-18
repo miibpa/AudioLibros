@@ -86,7 +86,7 @@ public class CustomLoginActivity extends AppCompatActivity implements View.OnCli
                 R.id.layoutSocial);
         layoutEmailButtons = (LinearLayout) findViewById(
                 R.id.layoutEmailButtons);
-        auth = ((Aplicacion)getApplicationContext()).getAuth();
+        auth = ((AppHelper)getApplicationContext()).getAuth();
 
         //Google
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(

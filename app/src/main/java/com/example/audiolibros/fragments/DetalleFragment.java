@@ -9,14 +9,13 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.NetworkImageView;
-import com.example.audiolibros.Aplicacion;
-import com.example.audiolibros.Libro;
-import com.example.audiolibros.LibrosSingleton;
+import com.example.audiolibros.AppHelper;
+import com.example.audiolibros.Book;
+import com.example.audiolibros.BooksSingleton;
 import com.example.audiolibros.MainActivity;
 import com.example.audiolibros.R;
 import com.example.audiolibros.VolleySingleton;
@@ -54,13 +53,13 @@ public class DetalleFragment extends Fragment implements
     }
 
     private void ponInfoLibro(int id, View vista) {
-        Libro libro = LibrosSingleton.getInstance(getActivity().getApplicationContext()).getLibros().elementAt(id);
-        ((TextView) vista.findViewById(R.id.titulo)).setText(libro.titulo);
-        ((TextView) vista.findViewById(R.id.autor)).setText(libro.autor);
+        Book book = BooksSingleton.getInstance(getActivity().getApplicationContext()).getBooks().elementAt(id);
+        ((TextView) vista.findViewById(R.id.titulo)).setText(book.titulo);
+        ((TextView) vista.findViewById(R.id.autor)).setText(book.autor);
         //((ImageView) vista.findViewById(R.id.portada)).setImageResource(libro.recursoImagen);
-        Aplicacion aplicacion = (Aplicacion) getActivity().getApplication();
+        AppHelper appHelper = (AppHelper) getActivity().getApplication();
         ((NetworkImageView) vista.findViewById(R.id.portada)).setImageUrl(
-                libro.urlImagen, VolleySingleton.getInstance(getActivity().getApplicationContext()).getLectorImagenes());
+                book.urlImagen, VolleySingleton.getInstance(getActivity().getApplicationContext()).getLectorImagenes());
 
         vista.setOnTouchListener(this);
         if (mediaPlayer != null){
@@ -69,7 +68,7 @@ public class DetalleFragment extends Fragment implements
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setOnPreparedListener(this);
         mediaController = new MediaController(getActivity());
-        Uri audio = Uri.parse(libro.urlAudio);
+        Uri audio = Uri.parse(book.urlAudio);
         try {
             mediaPlayer.setDataSource(getActivity(), audio);
             mediaPlayer.prepareAsync();

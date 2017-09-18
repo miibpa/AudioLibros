@@ -20,15 +20,15 @@ import java.util.Vector;
 public class AdaptadorLibros extends
         RecyclerView.Adapter<AdaptadorLibros.ViewHolder> {
     private LayoutInflater inflador;      //Crea Layouts a partir del XML
-    protected Vector<Libro> vectorLibros; //Vector con libros a visualizar
+    protected Vector<Book> vectorBooks; //Vector con libros a visualizar
     private Context contexto;
     private ClickAction clickAction = new EmptyClickAction();
     private ClickAction longClickAction = new EmptyClickAction();
 
-    public AdaptadorLibros(Context contexto, Vector<Libro> vectorLibros) {
+    public AdaptadorLibros(Context contexto, Vector<Book> vectorBooks) {
         inflador = (LayoutInflater) contexto
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.vectorLibros = vectorLibros;
+        this.vectorBooks = vectorBooks;
         this.contexto = contexto;
     }
 
@@ -64,9 +64,9 @@ public class AdaptadorLibros extends
     // Usando como base el ViewHolder y lo personalizamos
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int posicion) {
-        Libro libro = vectorLibros.elementAt(posicion);
+        Book book = vectorBooks.elementAt(posicion);
         //holder.portada.setImageResource(libro.recursoImagen);
-        holder.titulo.setText(libro.titulo);
+        holder.titulo.setText(book.titulo);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -81,7 +81,7 @@ public class AdaptadorLibros extends
             }
         });
         VolleySingleton volleySingleton = VolleySingleton.getInstance(contexto);
-        volleySingleton.getLectorImagenes().get(libro.urlImagen,
+        volleySingleton.getLectorImagenes().get(book.urlImagen,
                 new ImageLoader.ImageListener() {
                     @Override public void onResponse(ImageLoader.ImageContainer
                                                              response, boolean isImmediate) {
@@ -108,7 +108,7 @@ public class AdaptadorLibros extends
 
     // Indicamos el número de elementos de la lista
     @Override public int getItemCount() {
-        return vectorLibros.size();
+        return vectorBooks.size();
     }
 
 

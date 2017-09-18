@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import com.facebook.AccessToken;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ResultCodes;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,7 +24,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        auth = ((Aplicacion) getApplicationContext()).getAuth();
+        auth = ((AppHelper) getApplicationContext()).getAuth();
         doLogin();
     }
 

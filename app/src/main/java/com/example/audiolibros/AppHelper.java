@@ -11,7 +11,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Vector;
 
-public class Aplicacion extends Application {
+public class AppHelper extends Application {
 
     private FirebaseAuth auth;
 

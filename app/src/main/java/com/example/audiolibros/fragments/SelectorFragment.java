@@ -3,7 +3,6 @@ package com.example.audiolibros.fragments;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,15 +17,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.example.audiolibros.AdaptadorLibros;
 import com.example.audiolibros.AdaptadorLibrosFiltro;
-import com.example.audiolibros.Aplicacion;
-import com.example.audiolibros.Libro;
-import com.example.audiolibros.LibrosSingleton;
+import com.example.audiolibros.AppHelper;
+import com.example.audiolibros.Book;
+import com.example.audiolibros.BooksSingleton;
 import com.example.audiolibros.MainActivity;
-import com.example.audiolibros.MainPresenter;
 import com.example.audiolibros.R;
 import com.example.audiolibros.SearchObserveble;
 
@@ -36,15 +32,15 @@ public class SelectorFragment extends Fragment {
     private Activity actividad;
     private RecyclerView recyclerView;
     private AdaptadorLibrosFiltro adaptador;
-    private Vector<Libro> vectorLibros;
+    private Vector<Book> vectorBooks;
     private SearchObserveble searchObserveble;
 
     @Override public void onAttach(Activity actividad) {
         super.onAttach(actividad);
         this.actividad = actividad;
-        Aplicacion app = (Aplicacion) actividad.getApplication();
-        adaptador =  LibrosSingleton.getInstance(getActivity().getApplicationContext()).getAdaptador();
-        vectorLibros = LibrosSingleton.getInstance(getActivity().getApplicationContext()).getLibros();
+        AppHelper app = (AppHelper) actividad.getApplication();
+        adaptador =  BooksSingleton.getInstance(getActivity().getApplicationContext()).getAdaptador();
+        vectorBooks = BooksSingleton.getInstance(getActivity().getApplicationContext()).getBooks();
     }
 
     @Override public View onCreateView(LayoutInflater inflador, ViewGroup
@@ -63,19 +59,19 @@ public class SelectorFragment extends Fragment {
 
     public void showOptionsLongClick(final int id,final View v){
         AlertDialog.Builder menu = new AlertDialog.Builder(actividad);
-        CharSequence[] opciones = { "Compartir", "Borrar ", "Insertar" };
-        menu.setItems(opciones, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int opcion) {
-                switch (opcion) {
-                    case 0: //Compartir
-                        Libro libro = vectorLibros.elementAt(id);
+        CharSequence[] options = { "Compartir", "Borrar ", "Insertar" };
+        menu.setItems(options, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int option) {
+                switch (option) {
+                    case 0: //Share
+                        Book book = vectorBooks.elementAt(id);
                         Intent i = new Intent(Intent.ACTION_SEND);
                         i.setType("text/plain");
-                        i.putExtra(Intent.EXTRA_SUBJECT, libro.titulo);
-                        i.putExtra(Intent.EXTRA_TEXT, libro.urlAudio);
+                        i.putExtra(Intent.EXTRA_SUBJECT, book.titulo);
+                        i.putExtra(Intent.EXTRA_TEXT, book.urlAudio);
                         startActivity(Intent.createChooser(i, "Compartir"));
                         break;
-                    case 1: //Borrar
+                    case 1: //Delete
                         Snackbar.make(v,"¿Estás seguro?", Snackbar.LENGTH_LONG)
                                 .setAction("SI", new View.OnClickListener() {
                                     @Override
@@ -86,9 +82,9 @@ public class SelectorFragment extends Fragment {
                                 })
                                 .show();
 
-                    case 2: //Insertar
+                    case 2: //Insert
                         int posicion = recyclerView.getChildLayoutPosition(v);
-                        adaptador.insertar((Libro) adaptador.getItem(posicion));
+                        adaptador.insertar((Book) adaptador.getItem(posicion));
                         adaptador.notifyDataSetChanged();
                         Snackbar.make(v,"Libro insertado", Snackbar.LENGTH_INDEFINITE)
                                 .setAction("OK", new View.OnClickListener() {
@@ -112,6 +108,8 @@ public class SelectorFragment extends Fragment {
         inflater.inflate(R.menu.menu_selector, menu);
         MenuItem searchItem = menu.findItem(R.id.menu_buscar);
         SearchView searchView= (SearchView) searchItem.getActionView();
+
+        //Make adapter observe changes in SearchView
         SearchObserveble searchObservable = new SearchObserveble();
         searchObservable.addObserver(adaptador);
         searchView.setOnQueryTextListener(searchObservable);
@@ -122,11 +120,11 @@ public class SelectorFragment extends Fragment {
                     public boolean onMenuItemActionCollapse(MenuItem item) {
                         adaptador.setBusqueda("");
                         adaptador.notifyDataSetChanged();
-                        return true;  // Para permitir cierre
+                        return true;  //Allow closing
                     }
                     @Override
                     public boolean onMenuItemActionExpand(MenuItem item) {
-                        return true;  // Para permitir expansión
+                        return true;  // Allow expansion
                     }
                 });
         super.onCreateOptionsMenu(menu, inflater);
