@@ -34,15 +34,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity implements MainPresenter.View,NavigationView.OnNavigationItemSelectedListener{
-    private RecyclerView recyclerView;
-    private RecyclerView.LayoutManager layoutManager;
+
     private AdaptadorLibrosFiltro adaptador;
     private AppBarLayout appBarLayout;
     private TabLayout tabs;
     private DrawerLayout drawer;
     private ActionBarDrawerToggle toggle;
     private MainPresenter mainPresenter;
-    //private LibroStorage libroStorage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
